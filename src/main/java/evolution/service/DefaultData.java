@@ -38,6 +38,7 @@ public class DefaultData {
             User user = new User();
             user.setUsername(env.getProperty("evolution.default.defaultUserUsername"));
             user.setPassword(bCryptPasswordEncoder.encode(env.getProperty("evolution.default.defaultUserPassword")));
+            user.setActive(true);
 
             UserRole userRole = new UserRole();
             userRole.setRole(UserRoleEnum.USER.name());
@@ -52,6 +53,7 @@ public class DefaultData {
             User admin = new User();
             admin.setUsername(env.getProperty("evolution.default.defaultAdminUsername"));
             admin.setPassword(bCryptPasswordEncoder.encode(env.getProperty("evolution.default.defaultAdminPassword")));
+            admin.setActive(true);
 
             UserRole userRole = new UserRole();
             userRole.setRole(UserRoleEnum.ADMIN.name());
