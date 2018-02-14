@@ -1,4 +1,4 @@
-package evolution;
+package evolution.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
@@ -12,12 +12,25 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 
 @Configuration
 @EnableWebSecurity
 @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+    private final UserDetailsService userDetailsService;
+
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @Autowired
+    public WebSecurityConfig(UserDetailsService userDetailsService,
+                             BCryptPasswordEncoder bCryptPasswordEncoder) {
+        this.userDetailsService = userDetailsService;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+    }
 
     @Override
     @Bean
@@ -29,61 +42,23 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
-//                .anonymous()
-//                .disable()
-                .httpBasic().disable()
-//                .and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .antMatcher("/**")
                 .authorizeRequests()
                 .antMatchers(HttpMethod.OPTIONS).permitAll()
-                .antMatchers("/register/**", "/callback/**",
-                        "/interlink/**",
-                        "/callback2/**").permitAll()
-                .anyRequest().authenticated();
-
-//        if (securityProperties.isRequireSsl()){
-//            http.requiresChannel().anyRequest().requiresSecure();
-//        }
-
+                .anyRequest()
+                .authenticated();
     }
 
-//@PreAuthorize("${oauth2.hasScope('ui')}")
+    //@PreAuthorize("${oauth2.hasScope('ui')}")
     @Override
     @Autowired
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//        auth.userDetailsService(userDetailsService)
-//                .passwordEncoder(Encoder.BCrypt8.instance);
-
-//        auth.authenticationProvider(new DaoAuthenticationProvider());
-
-        auth.inMemoryAuthentication()
-                .withUser("admin")
-                .password("admin")
-        .authorities("ROLE_ADMIN")
-        .and()
-        .withUser("user")
-        .password("user")
-        .authorities("ROLE_USER");
+        auth
+                .userDetailsService(userDetailsService)
+                .passwordEncoder(bCryptPasswordEncoder);
     }
-
-
-
-
-
-
-
-
-
-    //    @Override
-//    public void configure(WebSecurity web) throws Exception {
-//        super.configure(web);
-//        web.ignoring()
-//                .antMatchers("/uaa/registration/*",
-//                        "/uaa/register/**", "/uaa/register/google",
-//                        "/uaa/callback/**", "/uaa/callback/google");
-//
-//    }
 
 }

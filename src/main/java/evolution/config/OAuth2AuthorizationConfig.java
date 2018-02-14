@@ -1,4 +1,4 @@
-package evolution;
+package evolution.config;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
