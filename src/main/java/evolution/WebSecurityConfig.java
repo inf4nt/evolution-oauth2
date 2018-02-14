@@ -1,6 +1,5 @@
 package evolution;
 
-//import com.amberity.authservice.server.domain.Encoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
@@ -14,20 +13,11 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 
-/**
- * @author Roman Hayda, 02.10.2017
- */
 
 @Configuration
 @EnableWebSecurity
 @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-
-//    @Autowired
-//    SecurityProperties securityProperties;
-//
-//    @Autowired
-//    private UserDetailsService userDetailsService;
 
     @Override
     @Bean
@@ -35,9 +25,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-    /**
-     * {@link com.amberity.authservice.server.config.ResourceServerConfig#configure description}
-     */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -74,7 +61,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         auth.inMemoryAuthentication()
                 .withUser("admin")
                 .password("admin")
-        .authorities("ROLE_ADMIN");
+        .authorities("ROLE_ADMIN")
+        .and()
+        .withUser("user")
+        .password("user")
+        .authorities("ROLE_USER");
     }
 
 

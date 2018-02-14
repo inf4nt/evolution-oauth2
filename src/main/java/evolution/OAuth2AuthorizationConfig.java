@@ -1,6 +1,6 @@
 package evolution;
 
-//import com.amberity.authservice.server.service.CustomTokenEnhancer;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,9 +24,7 @@ import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFacto
 
 import java.security.KeyPair;
 
-/**
- * @author Roman Hayda, 02.10.2017
- */
+
 
 @Configuration
 @EnableAuthorizationServer
@@ -42,26 +40,9 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
     @Value("${evolution.refreshTokenValiditySeconds}")
     private Integer refreshTokenValiditySeconds;
 
-
     @Autowired
     @Qualifier("authenticationManagerBean")
     private AuthenticationManager authenticationManager;
-
-//    @Autowired
-//    private CustomTokenEnhancer tokenEnhancer;
-//
-//    @Autowired
-//    private UserDetailsService userDetailsService;
-
-//		@Autowired
-//		private Environment env;
-
-//    @Bean
-//    @ConfigurationProperties(prefix = "spring.datasource")
-//    public DataSource dataSource() {
-//        return DataSourceBuilder.create().build();
-//
-//    }
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
@@ -157,18 +138,15 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
         endpoints
-//                .userDetailsService(userDetailsService)
                 .authenticationManager(authenticationManager)
-                .tokenServices(tokenServices());
+                .tokenServices(tokenServices())
+                .tokenStore(tokenStore())
+                .accessTokenConverter(jwtAccessTokenConverter());
     }
 
     @Override
     public void configure(AuthorizationServerSecurityConfigurer oauthServer) throws Exception {
         oauthServer
-//				.allowFormAuthenticationForClients() //??
-//                .sslOnly()
-//                .configure()
-//                .tokenKeyAccess("hasAuthority('ROLE_TRUSTED_CLIENT')")
                 .tokenKeyAccess("permitAll()")
                 .checkTokenAccess("isAuthenticated()");
     }
@@ -176,8 +154,8 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
     @Bean
     public TokenStore tokenStore() {
         return new JwtTokenStore(jwtAccessTokenConverter());
-//        return new JdbcTokenStore(dataSource());
     }
+
     @Bean
     public JwtAccessTokenConverter jwtAccessTokenConverter() {
         JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
@@ -187,16 +165,14 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
         converter.setKeyPair(keyPair);
         return converter;
     }
+
     @Bean
     @Primary
     public DefaultTokenServices tokenServices() {
-//        TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
-//        tokenEnhancerChain.setTokenEnhancers(
-//                Arrays.asList(tokenEnhancer, jwtAccessTokenConverter()));
         DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
         defaultTokenServices.setTokenStore(tokenStore());
         defaultTokenServices.setSupportRefreshToken(true);
-//        defaultTokenServices.setTokenEnhancer(tokenEnhancerChain);
+        defaultTokenServices.setTokenEnhancer(jwtAccessTokenConverter());
         return defaultTokenServices;
     }
 }
