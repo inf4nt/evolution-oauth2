@@ -10,8 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.security.Principal;
 
 @RestController
-@RequestMapping(value = "/auth")
-@CrossOrigin
+@RequestMapping(value = "/")
 public class EvolutionAuth2Controller {
 
     @GetMapping("/principal")

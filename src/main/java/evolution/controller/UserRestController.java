@@ -18,7 +18,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/user")
-@CrossOrigin
 public class UserRestController {
 
     private final UserRestService userRestService;
