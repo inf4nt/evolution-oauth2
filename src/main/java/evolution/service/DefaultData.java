@@ -1,8 +1,6 @@
 package evolution.service;
 
-import evolution.common.UserRoleEnum;
 import evolution.model.User;
-import evolution.model.UserRole;
 import evolution.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -40,28 +38,9 @@ public class DefaultData {
             user.setPassword(bCryptPasswordEncoder.encode(env.getProperty("evolution.default.defaultUserPassword")));
             user.setActive(true);
 
-            UserRole userRole = new UserRole();
-            userRole.setRole(UserRoleEnum.USER.name());
-            userRole.setUser(user);
-
-            user.getUserRoleList().add(userRole);
-
             userRepository.save(user);
         }
 
-        if (!userRepository.exists(env.getProperty("evolution.default.defaultAdminUsername"))) {
-            User admin = new User();
-            admin.setUsername(env.getProperty("evolution.default.defaultAdminUsername"));
-            admin.setPassword(bCryptPasswordEncoder.encode(env.getProperty("evolution.default.defaultAdminPassword")));
-            admin.setActive(true);
-
-            UserRole userRole = new UserRole();
-            userRole.setRole(UserRoleEnum.ADMIN.name());
-            userRole.setUser(admin);
-
-            admin.getUserRoleList().add(userRole);
-            userRepository.save(admin);
-        }
     }
 
 }

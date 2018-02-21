@@ -5,7 +5,6 @@ import evolution.dto.UserSaveDTO;
 import evolution.dto.UserUpdatePasswordDTO;
 import evolution.dto.UserUpdateUsernameDTO;
 import evolution.model.User;
-import evolution.model.UserRole;
 import evolution.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +12,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -26,9 +24,6 @@ public class UserCrudManagerImpl implements UserCrudManager {
     private final ModelMapper modelMapper;
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-
-    @Value("${evolution.default.role}")
-    private String defaultRole;
 
     @Autowired
     public UserCrudManagerImpl(UserRepository userRepository,
@@ -70,15 +65,6 @@ public class UserCrudManagerImpl implements UserCrudManager {
         User user = new User();
         user.setUsername(userSaveDTO.getUsername());
         user.setPassword(bCryptPasswordEncoder.encode(userSaveDTO.getPassword()));
-
-        user.setUserRoleList(user.getUserRoleList()
-                .stream()
-                .peek(o -> {
-                    o.setRole(defaultRole);
-                    o.setUser(user);
-                })
-                .collect(Collectors.toList())
-        );
         User saved = userRepository.save(user);
         return modelMapper.map(saved, UserDTO.class);
     }

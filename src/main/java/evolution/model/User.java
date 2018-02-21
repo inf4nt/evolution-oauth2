@@ -23,8 +23,5 @@ public class User {
 
     @Version
     @Column(columnDefinition = "bigint default 0")
-    private Long version;
-
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private List<UserRole> userRoleList = new ArrayList<>();
+    private Long version;;
 }
