@@ -23,6 +23,8 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
         <model.mapper>1.1.0</model.mapper>
+		<spring.cloud.security>1.2.2.RELEASE</spring.cloud.security>
+		<spring.cloud.starter.feign>1.4.3.RELEASE</spring.cloud.starter.feign>
 	</properties>
 
 	<dependencies>
@@ -79,6 +81,19 @@
 			<artifactId>modelmapper</artifactId>
 			<version>${model.mapper}</version>
 		</dependency>
+		<!--CLOUD-->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-feign</artifactId>
+			<version>${spring.cloud.starter.feign}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-security</artifactId>
+			<version>${spring.cloud.security}</version>
+		</dependency>
+		<!--CLOUD-->
 	</dependencies>
 
 	<build>
