@@ -16,7 +16,7 @@ public class UserRoleReference {
     @Column(columnDefinition = "bigint")
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", columnDefinition = "varchar(255)", nullable = false)
     private User user;
 

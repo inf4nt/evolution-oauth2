@@ -51,11 +51,6 @@ public class DefaultData {
             userRoleReference.setUser(user);
             userRoleReference.setRole(Role.ADMIN);
             userRoleReferenceRepository.save(userRoleReference);
-
-            userRoleReference = new UserRoleReference();
-            userRoleReference.setUser(user);
-            userRoleReference.setRole(Role.DEFAULT);
-            userRoleReferenceRepository.save(userRoleReference);
         }
 
         for (int i = 0; i < 20; i++) {
@@ -66,11 +61,6 @@ public class DefaultData {
             userRepository.save(user);
 
             UserRoleReference userRoleReference = new UserRoleReference();
-            userRoleReference.setUser(user);
-            userRoleReference.setRole(Role.DEFAULT);
-            userRoleReferenceRepository.save(userRoleReference);
-
-            userRoleReference = new UserRoleReference();
             userRoleReference.setUser(user);
 
             if (i % 2 == 0) {

@@ -1,8 +1,9 @@
 package evolution.server.model;
 
 import lombok.Data;
-
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "ev_user")
@@ -15,6 +16,9 @@ public class User {
 
     @Column(columnDefinition = "varchar(255)", nullable = false)
     private String password;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
+    private List<UserRoleReference> roles = new ArrayList<>();
 
     @Column(columnDefinition = "boolean default true")
     private boolean active;
