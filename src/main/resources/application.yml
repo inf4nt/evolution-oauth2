@@ -8,19 +8,40 @@ server:
 security:
   basic:
     enabled: false
+  oauth2:
+    client:
+       clientId: auth_server
+       clientSecret: secret
+       accessTokenUri: http://localhost:5000/uaa/oauth/token
+       authorizedGrantTypes: client_credentials,refresh_token,password
+       scope: auth_server
+       userAuthorizationUri: http://localhost:5000/uaa/oauth/authorize
+#     resource:
+#         userInfoUri: http://localhost:5000/uaa/me
+#         tokenInfoUri: http://localhost:5000/uaa/oauth/check_token
 
 spring:
   jpa:
     show-sql: true
     hibernate:
       ddl-auto: update
+  application:
+    name: auth-service
 
 
 evolution:
+  oauth2:
+    username: evolution_auth_serivce@evolution.com
+    password: evolution_auth_serivce@evolution.com
   certificate:
     key: mySecretKey
-  accessTokenValiditySeconds: 25000
-  refreshTokenValiditySeconds: 300000
+  accessTokenValiditySeconds: 300
+  refreshTokenValiditySeconds: 300
   default:
     defaultUserUsername: user_evolution@evolution.com
     defaultUserPassword: user_evolution@evolution.com
+
+
+feign:
+  url:
+    people: localhost:8083/ev_people

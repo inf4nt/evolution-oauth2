@@ -22,7 +22,7 @@ public class UserSecurity extends User {
                         boolean accountNonLocked,
                         Collection<? extends GrantedAuthority> authorities,
                         evolution.server.model.User user) {
-        super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
+        super(user.getId().toString(), password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
         this.user = user;
     }
 }

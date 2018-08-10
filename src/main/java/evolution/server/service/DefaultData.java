@@ -1,5 +1,7 @@
 package evolution.server.service;
 
+import evolution.client.command.UserCreateCommand;
+import evolution.client.feign.UserFeignClient;
 import evolution.server.common.Role;
 import evolution.server.model.User;
 import evolution.server.model.UserRoleReference;
@@ -11,6 +13,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class DefaultData {
@@ -23,15 +27,19 @@ public class DefaultData {
 
     private final UserRoleReferenceRepository userRoleReferenceRepository;
 
+    private final UserFeignClient userFeignClient;
+
     @Autowired
     public DefaultData(UserRepository userRepository,
                        BCryptPasswordEncoder bCryptPasswordEncoder,
                        Environment env,
-                       UserRoleReferenceRepository userRoleReferenceRepository) {
+                       UserRoleReferenceRepository userRoleReferenceRepository,
+                       UserFeignClient userFeignClient) {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.env = env;
         this.userRoleReferenceRepository = userRoleReferenceRepository;
+        this.userFeignClient = userFeignClient;
     }
 
     @PostConstruct
@@ -40,7 +48,7 @@ public class DefaultData {
     }
 
     private void createDefaultUser() {
-        if (!userRepository.exists(env.getProperty("evolution.default.defaultUserUsername"))) {
+        if (!userRepository.findByUsername(env.getProperty("evolution.default.defaultUserUsername")).isPresent()) {
             User user = new User();
             user.setUsername(env.getProperty("evolution.default.defaultUserUsername"));
             user.setPassword(bCryptPasswordEncoder.encode(env.getProperty("evolution.default.defaultUserPassword")));
@@ -53,7 +61,7 @@ public class DefaultData {
             userRoleReferenceRepository.save(userRoleReference);
         }
 
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 10; i++) {
             User user = new User();
             user.setUsername("username_people" + i);
             user.setPassword(bCryptPasswordEncoder.encode("password"));
@@ -71,6 +79,11 @@ public class DefaultData {
             userRoleReferenceRepository.save(userRoleReference);
         }
 
+        List<User> all = userRepository.findAll();
+        all.forEach(o -> CompletableFuture.runAsync(() -> userFeignClient.postUser(new UserCreateCommand(
+                o.getId().toString(),
+                o.getUsername()
+        ))));
     }
 
 }

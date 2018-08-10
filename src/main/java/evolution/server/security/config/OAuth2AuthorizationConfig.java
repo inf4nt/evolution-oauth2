@@ -59,6 +59,14 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
 //				.resourceIds(authServerResourceId/*, "oauth2-resource"*/) //определяет к каким ресурсам может обращаться
 
                 .and()
+                .withClient("auth_server")
+                .authorizedGrantTypes("refresh_token", "password", "client_credentials")
+                .scopes("auth_server")
+                .accessTokenValiditySeconds(accessTokenValiditySeconds)
+                .refreshTokenValiditySeconds(refreshTokenValiditySeconds)
+
+
+                .and()
                 .withClient("adminka")
                 .authorizedGrantTypes("refresh_token", "password", "client_credentials")
                 .scopes("server", "ui")

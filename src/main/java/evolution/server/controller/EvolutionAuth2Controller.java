@@ -12,7 +12,7 @@ import java.security.Principal;
 @RequestMapping(value = "/")
 public class EvolutionAuth2Controller {
 
-    @GetMapping("/principal")
+    @GetMapping(value = {"/principal", "/me"})
     public ResponseEntity<Principal> currentPrincipal(@AuthenticationPrincipal Principal principal) {
         return ResponseEntity.ok(principal);
     }
